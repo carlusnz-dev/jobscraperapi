@@ -21,13 +21,14 @@ def search_jobs_on_gupy(job_name):
                     html_content = page.content()
                     soup_job = BeautifulSoup(html_content, "html.parser")
                     jobs = soup_job.find_all('a', 'IKqnq')
-                    print(f'Buscando empregos na página {number_page}')
+                    print(f'\nBuscando empregos na página {number_page}')
                         
                     for job in jobs:
                         title = job.find('h3').get_text()
                         company = job.find('p', 'bpsGtj').get_text()
                         link = job['href']
                         descriptions = job.find_all('div', 'hCmVmU')
+                        date = job.find('p', 'iUzUdL').get_text()
                         desc_formatted = []
                         for item in descriptions:
                             desc_formatted.append(item.get_text())
@@ -36,7 +37,8 @@ def search_jobs_on_gupy(job_name):
                             "title": title,
                             "link": link,
                             "company": company,
-                            "description": desc_formatted
+                            "description": desc_formatted,
+                            "date": date
                         }
                         
                         try:
@@ -48,7 +50,7 @@ def search_jobs_on_gupy(job_name):
                     break
                 
                 if jobs:
-                    print(f"\nNúmero de empregos salvos: {len(all_jobs)} (pág. {number_page})") 
+                    print(f"Número de empregos salvos: {len(all_jobs)} (pág. {number_page})") 
                     number_page += 1
                     print(number_page)
                     page.goto(f'{gupy_url}{job_name}?page={number_page}')   
@@ -60,3 +62,10 @@ def search_jobs_on_gupy(job_name):
     except Exception as e:
         print(f"An error occurred: {e}")
         return []
+    
+if __name__ == '__main__':
+    name = input('Digite o emprego: ')
+    jobs = search_jobs_on_gupy(name)
+    for job in jobs:
+        print(job["title"])
+        print(job["date"])
