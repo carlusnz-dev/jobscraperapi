@@ -17,7 +17,7 @@ export default function JobPage() {
 
   return (
     <div className="min-h-screen w-full flex flex-col justify-center items-center">
-      <div className="max-w-1/2 flex flex-col items-center text-center">
+      <div className="w-full max-w-1/2 flex flex-col items-center text-center">
         {job?.link.includes('gupy') && (
           <p className="mb-3 px-3 text-lg text-black bg-white">Gupy</p>
         )}
