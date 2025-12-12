@@ -53,6 +53,36 @@ def read_all():
         "has_next": pagination.has_next,
         "current_page": page
     })
+    
+@app.route("/vagas/search")
+def search():
+    query = request.args.get("query")
+    page = request.args.get("page", 1, type=int)
+    per_page = 15
+    pagination = Job.query.filter(Job.title.ilike(f"%{query}%") | Job.company.ilike(f"%{query}%")).paginate(page=page, per_page=per_page, error_out=False)
+    jobs_list = pagination.items
+    all_jobs_formatted = []
+    
+    if query:
+        for job in jobs_list:
+            data_job = {
+                "id": job.id,
+                "title": job.title,
+                "link": job.link,
+                "company": job.company,
+                "date": job.date,
+                "description": job.description
+            }
+            try:
+                all_jobs_formatted.append(data_job)
+            except:
+                print(f"Erro ao colocar tal emprego no search! {job.title}")
+    
+    return jsonify({
+        "jobs": all_jobs_formatted,
+        "has_next": pagination.has_next,
+        "current_page": page
+    })
 
 @app.route("/vagas/gupy/<job_name>")
 def scraper_gupy(job_name):
